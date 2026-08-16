@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Entorno virtual
+.venv/
+venv/
+
+# Secretos y config local
+.env
+.env.*
+!*.env.example
+*.token.json
+*.key
+credentials.json
+settings.json
+
+# Datos y modelos descargados
+.cache/
+*.wav
+*.mp3
+
+# Editor
+.vscode/
+.idea/
+*.swp
