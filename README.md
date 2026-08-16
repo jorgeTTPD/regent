@@ -4,6 +4,14 @@ Asistente personal por voz **one-shot** para Linux: hablas una orden, se transcr
 
 > **v1 — PoC funcional.** Sin empaquetar, sin daemon, sin interfaz gráfica: solo el puente.
 
+> ### 🧩 Versión genérica
+>
+> Este repositorio contiene una **versión genérica y limpia** del proyecto, publicada para que **cualquiera** pueda usarla, modificarla y adaptarla a su sistema.
+>
+> La **versión personal** del autor está completamente **integrada y personalizada** para su propia máquina Arch Linux (atajos, scripts y configuración del sistema) y **no está publicada** — solo el autor tiene acceso a ella.
+>
+> Filosofía Arch: toma la base, constrúyela y hazla tuya. 🐧
+
 ## ✨ Cómo funciona
 
 ```
