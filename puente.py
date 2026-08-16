@@ -83,7 +83,7 @@ def grabar() -> np.ndarray:
                 audio.append(data.copy())
                 total_muestras += chunk_len
 
-                # Nunca empezó a hablar: abortar pronto en vez de grabar los 8s completos
+                
                 if not hablando and total_muestras >= max_silencio_inicial:
                     return np.array([])
 
