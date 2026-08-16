@@ -4,7 +4,7 @@ Asistente personal por voz **one-shot** para Linux: hablas una orden, se transcr
 
 > **v1 — PoC funcional.** Sin empaquetar, sin daemon, sin interfaz gráfica: solo el puente.
 
-> ### 🧩 Versión genérica
+> **🧩 Versión genérica**
 >
 > Este repositorio contiene una **versión genérica y limpia** del proyecto, publicada para que **cualquiera** pueda usarla, modificarla y adaptarla a su sistema.
 >
