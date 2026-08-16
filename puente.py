@@ -1,23 +1,4 @@
-#!/usr/bin/env python3
-"""
-Puente de voz → Antigravity CLI (agy)
-=====================================
-super+o  →  graba audio en RAM  →  whisper transcribe  →  agy -p ejecuta  →  muere
 
-One-shot: no daemon, no archivos temporales, no consumo en reposo.
-
-Dependencias (en el venv del proyecto):
-    .venv/bin/pip install faster-whisper sounddevice numpy
-
-Configuración por variables de entorno (opcional):
-    VA_MODEL          modelo de whisper        (default: base)
-    VA_LANG           idioma                   (default: es)
-    VA_MAX_SECONDS    duración máx de grabación (default: 8)
-    VA_SILENCE_DB     umbral de silencio en dB  (default: -35)
-    VA_DEVICE         dispositivo de audio     (default: auto)
-    VA_TIMEOUT        timeout de agy en segundos (default: 120)
-    VA_INITIAL_SILENCE  segundos máx sin hablar antes de abortar (default: 3)
-"""
 
 import argparse
 import os
@@ -26,9 +7,7 @@ import sys
 
 import numpy as np
 
-# ---------------------------------------------------------------------------
-# Configuración
-# ---------------------------------------------------------------------------
+
 MODEL = os.environ.get("VA_MODEL", "base")
 LANG = os.environ.get("VA_LANG", "es")
 MAX_SECONDS = float(os.environ.get("VA_MAX_SECONDS", "8"))
@@ -36,9 +15,9 @@ SILENCE_DB = float(os.environ.get("VA_SILENCE_DB", "-35"))
 DEVICE = os.environ.get("VA_DEVICE", None)
 AGY_TIMEOUT = int(os.environ.get("VA_TIMEOUT", "120"))
 INITIAL_SILENCE = float(os.environ.get("VA_INITIAL_SILENCE", "3"))
-SAMPLE_RATE = 16000  # lo que necesita whisper
-CHUNK_SECONDS = 0.3  # análisis de silencio en trozos de 300ms
-SILENCE_CHUNKS = 2   # 2 trozos seguidos de silencio (~600ms) = fin de la orden
+SAMPLE_RATE = 16000  
+CHUNK_SECONDS = 0.3  
+SILENCE_CHUNKS = 2   
 
 SYSTEM_PROMPT = """Eres un asistente personal por voz con acceso a los archivos del usuario (~).
 Reglas obligatorias:
@@ -50,11 +29,9 @@ Reglas obligatorias:
 Ejecuta la orden del usuario usando herramientas de terminal y confirma lo que hiciste."""
 
 
-# ---------------------------------------------------------------------------
-# 1. Grabación en RAM (nunca toca el disco)
-# ---------------------------------------------------------------------------
+
 def _abrir_stream(sd, dispositivo):
-    """Abre el micrófono a 16kHz; si el dispositivo elegido falla, cae al por defecto."""
+    
     try:
         return sd.InputStream(
             samplerate=SAMPLE_RATE, channels=1, dtype="float32", device=dispositivo
@@ -112,7 +89,7 @@ def grabar() -> np.ndarray:
 
                 if (hablando and silencios >= SILENCE_CHUNKS) or total_muestras >= max_muestras:
                     break
-    except Exception as exc:  # dispositivo inválido, ocupado, o fallo al grabar
+    except Exception as exc:  # dallo al grabar
         print(f"❌ Error con el micrófono: {exc}", file=sys.stderr)
         _notificar("Asistente", "❌ Error con el micrófono")
         sys.exit(1)
@@ -120,9 +97,7 @@ def grabar() -> np.ndarray:
     return np.concatenate(audio, axis=0).reshape(-1) if audio else np.array([])
 
 
-# ---------------------------------------------------------------------------
-# 1b. Modo test: graba unos segundos y muestra el nivel de señal
-# ---------------------------------------------------------------------------
+
 def test_mic(segundos: float = 4.0) -> None:
     if segundos <= 0:
         segundos = 4.0
@@ -168,9 +143,7 @@ def test_mic(segundos: float = 4.0) -> None:
         )
 
 
-# ---------------------------------------------------------------------------
-# 2. Transcripción con faster-whisper
-# ---------------------------------------------------------------------------
+
 def transcribir(audio: np.ndarray) -> str:
     from faster_whisper import WhisperModel
 
@@ -179,9 +152,7 @@ def transcribir(audio: np.ndarray) -> str:
     return " ".join(seg.text.strip() for seg in segments).strip()
 
 
-# ---------------------------------------------------------------------------
-# 3. Ejecución con agy (headless, one-shot)
-# ---------------------------------------------------------------------------
+
 def ejecutar(texto: str) -> None:
     prompt = f"{SYSTEM_PROMPT}\n\nOrden del usuario: {texto}"
     print(f"🤖 Enviando a agy...", file=sys.stderr)
